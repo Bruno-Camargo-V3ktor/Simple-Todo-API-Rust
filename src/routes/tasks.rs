@@ -17,7 +17,7 @@ pub fn list_task(db: &State<Db>) -> Json<Vec<Task>> {
 pub fn add_task(
     db: &State<Db>,
     data: Json<Task>,
-) -> Result<status::Custom<()>, status::BadRequest<&'static str>> {
+) -> Result<status::Custom<()>, status::BadRequest<String>> {
     let mut db = db.lock().expect("Falid load db");
     let mut task = data.into_inner();
 
@@ -34,7 +34,7 @@ pub fn update_task(
     db: &State<Db>,
     id: usize,
     data: Json<Task>,
-) -> Result<status::Custom<()>, status::BadRequest<&'static str>> {
+) -> Result<status::Custom<()>, status::NotFound<String>> {
     let mut db = db.lock().expect("Falid load db");
     let task = data.into_inner();
 
@@ -45,7 +45,7 @@ pub fn update_task(
             t.completed = task.completed;
         }
 
-        None => return Err(status::BadRequest("Task Not Found")),
+        None => return Err(status::NotFound(String::from("Task Not Found"))),
     }
 
     Ok(status::Custom(Status::Ok, ()))
@@ -66,5 +66,5 @@ pub fn delete_task(
 
 // FUNCTIONS
 pub fn routes() -> Vec<Route> {
-    routes![list_task, add_task, update_task]
+    routes![list_task, add_task, update_task, delete_task]
 }
