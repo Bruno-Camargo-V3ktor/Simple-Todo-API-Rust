@@ -51,7 +51,7 @@ pub fn update_task(
     Ok(status::Custom(Status::Ok, ()))
 }
 
-#[delete("/<id>", format = "application/json")]
+#[delete("/<id>")]
 pub fn delete_task(
     db: &State<Db>,
     id: usize,
