@@ -1,0 +1,10 @@
+[package]
+name = "simple-todo-list"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rocket = { version="0.5.1", features=["json"] }
+tokio = { version="1.0", features=["full"] }
+serde = { version="*", features = ["derive"]}
+serde_json = "*"
