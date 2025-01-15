@@ -1,4 +1,6 @@
 mod db;
+mod models;
+
 use db::mem_db::init_db;
 use rocket::{launch, routes};
 
