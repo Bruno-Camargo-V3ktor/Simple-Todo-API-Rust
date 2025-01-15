@@ -13,6 +13,19 @@ pub fn list_task(db: &State<Db>) -> Json<Vec<Task>> {
     Json(tasks)
 }
 
+#[get("/<id>", format = "application/json")]
+pub fn get_task(
+    db: &State<Db>,
+    id: usize,
+) -> Result<status::Custom<Json<Task>>, status::NotFound<String>> {
+    let db = db.lock().expect("Falid load db");
+
+    match db.get(&id) {
+        Some(t) => Ok(status::Custom(Status::Ok, Json(t.clone()))),
+        None => Err(status::NotFound(String::from("Task not found"))),
+    }
+}
+
 #[post("/", format = "application/json", data = "<data>")]
 pub fn add_task(
     db: &State<Db>,
@@ -66,5 +79,5 @@ pub fn delete_task(
 
 // FUNCTIONS
 pub fn routes() -> Vec<Route> {
-    routes![list_task, add_task, update_task, delete_task]
+    routes![list_task, get_task, add_task, update_task, delete_task]
 }
