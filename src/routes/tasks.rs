@@ -3,7 +3,7 @@ use crate::models::task::Task;
 use rocket::http::Status;
 use rocket::response::status;
 use rocket::serde::json::Json;
-use rocket::{Route, State, get, post, put, routes};
+use rocket::{Route, State, delete, get, post, put, routes};
 
 // ENDPOINTS
 #[get("/")]
@@ -49,6 +49,19 @@ pub fn update_task(
     }
 
     Ok(status::Custom(Status::Ok, ()))
+}
+
+#[delete("/<id>", format = "application/json")]
+pub fn delete_task(
+    db: &State<Db>,
+    id: usize,
+) -> Result<status::Custom<()>, status::NotFound<String>> {
+    let mut db = db.lock().expect("Falid load db");
+
+    match db.remove(&id) {
+        Some(_) => Ok(status::Custom(Status::Ok, ())),
+        None => Err(status::NotFound(String::from("Task not found"))),
+    }
 }
 
 // FUNCTIONS
